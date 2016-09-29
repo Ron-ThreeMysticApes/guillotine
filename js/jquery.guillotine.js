@@ -35,7 +35,8 @@
     zoomStep: 0.1,
     init: null,
     eventOnChange: null,
-    onChange: null
+    onChange: null,
+	filter: null, 
   };
 
   touchRegExp = /touch/i;
@@ -133,20 +134,33 @@
       }
       hardwareAccelerate(this.$el);
       this.$el.on(events.start, this._start);
+
+	  if(this.op.filter != null && this.op.filter.length>0){
+		  this.op.filter.on(events.start, this._start).removeClass('guillotine-window').addClass('guillotine-window');
+	  }
     }
 
     Guillotine.prototype._wrap = function(element) {
       var canvas, el, guillotine, height, paddingTop, width;
       el = $(element);
       if (element.tagName === 'IMG') {
+		  console.log(element.naturalWidth);
         if (element.naturalWidth) {
           width = element.naturalWidth;
           height = element.naturalHeight;
         } else {
-          el.addClass('guillotine-sample');
-          width = el.width();
-          height = el.height();
-          el.removeClass('guillotine-sample');
+			var img = new Image();
+			img.src = element.src;
+			if(img.width>0){
+				width = img.width;
+				height = img.height;
+			}
+			else{
+			  el.addClass('guillotine-sample');
+			  width = el.width();
+			  height = el.height();
+			  el.removeClass('guillotine-sample');
+			}
         }
       } else {
         width = el.width();
